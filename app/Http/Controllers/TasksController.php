@@ -50,8 +50,8 @@ class TasksController extends Controller
         ]);
         
         $task = new Task;
-        $task->content = $request->content;
         $task->title = $request->title;    // 追加
+        $task->content = $request->content;
         $task->save();
 
         return redirect('/');
@@ -102,6 +102,7 @@ class TasksController extends Controller
         ]);
 
         $task = Task::find($id);
+        $task->title = $request->title;    // 追加
         $task->content = $request->content;
         $task->save();
 

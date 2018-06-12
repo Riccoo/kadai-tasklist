@@ -6,8 +6,6 @@
     
     <p>タイトル: {{ $task->title }}</p>
     <p>メッセージ: {{ $task->content }}</p>
-
-    <p>{{ $task->content }}</p>
     
     {!! link_to_route('tasks.edit', 'このメッセージを編集', ['id' => $task->id]) !!}
     
