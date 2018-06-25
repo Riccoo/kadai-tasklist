@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 use App\Task;    // 追加
 
@@ -16,7 +17,7 @@ class TasksController extends Controller
     public function index()
     {
         $tasks = Task::all();
-
+        
         return view('tasks.index', [
             'tasks' => $tasks,
         ]);
@@ -50,8 +51,9 @@ class TasksController extends Controller
         ]);
         
         $task = new Task;
-        $task->status = $request->status;    // 追加
+        $task->status = $request->status;
         $task->content = $request->content;
+        $task->users_id = Auth::user()->id; // 追加
         $task->save();
 
         return redirect('/');
@@ -66,6 +68,10 @@ class TasksController extends Controller
     public function show($id)
     {
         $task = Task::find($id);
+        
+        if ($task->users_id !== \Auth::id()) {
+            return redirect('/');
+        }
 
         return view('tasks.show', [
             'task' => $task,
