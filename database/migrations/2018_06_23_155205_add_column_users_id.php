@@ -14,7 +14,6 @@ class AddColumnUsersId extends Migration
     public function up()
     {
         Schema::table('tasks', function (Blueprint $table) {
-            $table->dropColumn('users_id');
         });
     }
 
@@ -26,7 +25,6 @@ class AddColumnUsersId extends Migration
     public function down()
     {
         Schema::table('tasks', function (Blueprint $table) {
-            $table->dropColumn('users_id');
         });
     }
 }
