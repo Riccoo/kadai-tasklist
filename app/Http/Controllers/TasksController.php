@@ -9,6 +9,12 @@ use App\Task;    // 追加
 
 class TasksController extends Controller
 {
+    
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -56,7 +62,7 @@ class TasksController extends Controller
         $task->users_id = Auth::user()->id; // 追加
         $task->save();
 
-        return redirect('/');
+        return redirect('tasks');
     }
 
     /**
@@ -67,14 +73,14 @@ class TasksController extends Controller
      */
     public function show($id)
     {
-        $task = Task::find($id);
+        $tasks = Task::find($id);
         
-        if ($task->users_id !== \Auth::id()) {
-            return redirect('/');
+        if ($tasks->users_id !== \Auth::id()) {
+            return redirect('tasks');
         }
 
         return view('tasks.show', [
-            'task' => $task,
+            'tasks' => $tasks,
         ]);
     }
 
@@ -86,10 +92,14 @@ class TasksController extends Controller
      */
     public function edit($id)
     {
-        $task = Task::find($id);
+        $tasks = Task::find($id);
+        
+        if ($tasks->users_id !== \Auth::id()) {
+        return redirect('/');
+        }
 
         return view('tasks.edit', [
-            'task' => $task,
+            'tasks' => $tasks,
         ]);
     }
 
@@ -102,17 +112,23 @@ class TasksController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $tasks = Task::find($id);
+        
         $this->validate($request, [
             'status' => 'required|max:191',   // 追加
             'content' => 'required|max:191',
         ]);
+        
+        if ($tasks->users_id !== \Auth::id()) {
+        return redirect('/');
+        }
 
         $task = Task::find($id);
         $task->status = $request->status;    // 追加
         $task->content = $request->content;
         $task->save();
 
-        return redirect('/');
+        return redirect('tasks');
     }
     /**
      * Remove the specified resource from storage.
@@ -122,9 +138,14 @@ class TasksController extends Controller
      */
     public function destroy($id)
     {
-        $task = Task::find($id);
-        $task->delete();
-
+        $tasks = Task::find($id);
+        
+        if ($tasks->users_id !== \Auth::id()) {
         return redirect('/');
+        }
+        
+        $tasks->delete();
+
+        return redirect('tasks');
     }
 }
