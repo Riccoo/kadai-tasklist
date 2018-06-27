@@ -22,7 +22,9 @@ class TasksController extends Controller
      */
     public function index()
     {
-        $tasks = Task::all();
+        //$tasks = Task::all();
+        $user = \Auth::user();
+        $tasks = Task::where('users_id', $user->id)->orderBy('created_at', 'desc')->paginate(10);
         
         return view('tasks.index', [
             'tasks' => $tasks,
